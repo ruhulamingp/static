@@ -20,7 +20,7 @@ pipeline{
          stage('Check if site is up') {
               steps {
                   retry(3){
-                      sh 'curl -X GET "https://ruhulaminjenkins.s3-website-us-east-1.amazonaws.com/index.html"'
+                      sh 'curl -X GET "http://ruhulaminjenkins.s3-website-us-east-1.amazonaws.com/index.html"'
                   }
               }
          }

@@ -1,17 +1,30 @@
 pipeline{
     agent any
+     stages {
+         stage('Build') {
+             steps {
+                 sh 'echo "Hello World"'
+                 sh '''
+                     echo "Multiline shell steps works too"
+                     ls -lah
+                 '''
+             }
+         }
+    
+    agent any
     stages{
         stage('Lint HTML') {
               steps {
                   sh 'tidy -q -e *.html'
               }
          }
+        
         stage('Upload to AWS') {
               steps {
                   retry(3){         
-                    withAWS(region:'us-east-1e',credentials:'aws-static') {
+                    withAWS(region:'us-east-1',credentials:'aws-static') {
                     sh 'echo "Uploading content with AWS creds"'
-                        s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'jenkins-awesome-project')
+                        s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'ruhulaminjenkins')
                     }
                   }
               }
@@ -19,7 +32,7 @@ pipeline{
          stage('Check if site is up') {
               steps {
                   retry(3){
-                      sh 'curl -X GET "https://jenkins-awesome-project.s3-us-east-1e.amazonaws.com/index.html"'
+                      sh 'curl -X GET "https://ruhulaminjenkins.s3-website-us-east-1.amazonaws.com/index.html"'
                   }
               }
          }
